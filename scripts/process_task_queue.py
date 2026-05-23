@@ -7,6 +7,7 @@ from core.task_branch_manager import TaskBranchManager
 from workers.planner_worker import PlannerWorker
 from workers.reviewer_worker import ReviewerWorker
 from workers.semantic_reviewer import SemanticReviewer
+from workers.multi_file_patch_executor import MultiFilePatchExecutor
 from core.report_writer import save_report
 
 queue = TaskQueue()
@@ -17,6 +18,7 @@ branches = TaskBranchManager()
 planner = PlannerWorker()
 reviewer = ReviewerWorker()
 semantic = SemanticReviewer()
+patcher = MultiFilePatchExecutor()
 
 print("\n=== TASK QUEUE PROCESSOR ===\n")
 
@@ -37,7 +39,6 @@ for task_path in tasks:
                 "task": task,
                 "reason": "Task requires approval before processing."
             })
-
             print(f"Approval required. Queued: {approval_path}")
             queue.mark_done(task_path)
             continue
@@ -52,10 +53,13 @@ for task_path in tasks:
         print("Reviewing plan...")
         review = reviewer.review_plan(task, plan)
 
+        print("Generating patch bundle proposal...")
+        patch_bundle = patcher.generate_patch_bundle(task)
+
         print("Semantic review...")
         semantic_review = semantic.review_code(
             task,
-            json.dumps(plan, indent=2)
+            json.dumps(patch_bundle, indent=2)
         )
 
         report = {
@@ -63,7 +67,9 @@ for task_path in tasks:
             "branch": branch,
             "plan": plan,
             "review": review,
+            "patch_bundle": patch_bundle,
             "semantic_review": semantic_review,
+            "auto_applied": False,
         }
 
         path = save_report(
@@ -72,6 +78,7 @@ for task_path in tasks:
         )
 
         print(f"Saved report: {path}")
+        print("Patch generated but NOT applied.")
 
         queue.mark_done(task_path)
         print("Marked DONE.")
