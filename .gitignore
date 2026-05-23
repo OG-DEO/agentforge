@@ -12,3 +12,6 @@ workspaces/backups/
 approvals/
 queue/
 memory/
+__pycache__/
+*.pyc
+merge_approvals/
