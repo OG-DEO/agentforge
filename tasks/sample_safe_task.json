@@ -1,0 +1,8 @@
+{
+  "id": "task-0002",
+  "title": "Create safe planning outline",
+  "project": "UltraWorkers",
+  "risk": "low",
+  "requires_approval": false,
+  "objective": "Design the next architecture phase for UltraWorkers without modifying protected projects."
+}
