@@ -2,30 +2,32 @@ import json
 
 from core.task_queue import TaskQueue
 from core.approval_gate import ApprovalGate
-from core.approval_queue import ApprovalQueue
-from core.task_branch_manager import TaskBranchManager
-from core.batch_apply_engine import BatchApplyEngine
 
-from workers.planner_worker import PlannerWorker
-from workers.reviewer_worker import ReviewerWorker
-from workers.semantic_reviewer import SemanticReviewer
-from workers.multi_file_patch_executor import MultiFilePatchExecutor
+from orchestrators.branch_stage import BranchStage
+from orchestrators.planning_stage import PlanningStage
+from orchestrators.review_stage import ReviewStage
+from orchestrators.patch_stage import PatchStage
+from orchestrators.semantic_stage import SemanticStage
+from orchestrators.apply_decision_stage import (
+    ApplyDecisionStage
+)
+from orchestrators.approval_stage import ApprovalStage
+from orchestrators.report_stage import ReportStage
 
-from core.report_writer import save_report
+print("\n=== TASK QUEUE PROCESSOR ===\n")
 
 queue = TaskQueue()
 gate = ApprovalGate()
-approvals = ApprovalQueue()
-branches = TaskBranchManager()
 
-planner = PlannerWorker()
-reviewer = ReviewerWorker()
-semantic = SemanticReviewer()
-patcher = MultiFilePatchExecutor()
+branch_stage = BranchStage()
+planning_stage = PlanningStage()
+review_stage = ReviewStage()
+patch_stage = PatchStage()
+semantic_stage = SemanticStage()
 
-apply_engine = BatchApplyEngine()
-
-print("\n=== TASK QUEUE PROCESSOR ===\n")
+decision_stage = ApplyDecisionStage()
+approval_stage = ApprovalStage()
+report_stage = ReportStage()
 
 tasks = queue.pending()
 
@@ -37,99 +39,95 @@ for task_path in tasks:
     print(f"\nProcessing: {task_path.name}")
 
     try:
-        task = json.loads(task_path.read_text(encoding="utf-8"))
+        task = json.loads(
+            task_path.read_text(
+                encoding="utf-8"
+            )
+        )
 
         if gate.requires_approval(task):
-            approval_path = approvals.submit({
-                "task": task,
-                "reason": "Task requires approval before processing."
-            })
+            result = approval_stage.run(
+                task=task,
+                patch_bundle=None,
+                semantic_review=None,
+                reason="Task requires approval before processing."
+            )
 
-            print(f"Approval required. Queued: {approval_path}")
+            print(
+                f"Approval required: "
+                f"{result['approval_path']}"
+            )
 
             queue.mark_done(task_path)
             continue
 
-        print("Creating isolated task branch...")
-
-        branch = branches.create_for_task(task)
+        branch_result = branch_stage.run(task)
+        branch = branch_result["branch"]
 
         print(f"Branch: {branch}")
 
-        print("Generating plan...")
-        plan = planner.build_plan(task)
+        planning_result = planning_stage.run(task)
+        plan = planning_result["plan"]
 
-        print("Reviewing plan...")
-        review = reviewer.review_plan(task, plan)
-
-        print("Generating patch bundle proposal...")
-        patch_bundle = patcher.generate_patch_bundle(task)
-
-        print("Semantic review...")
-        semantic_review = semantic.review_code(
+        review_result = review_stage.run(
             task,
-            json.dumps(patch_bundle, indent=2)
+            plan
         )
 
-        risk = semantic_review.get(
-            "risk_level",
-            "high"
-        ).lower()
+        review = review_result["review"]
 
-        quality = semantic_review.get(
-            "quality_status",
-            ""
-        ).lower()
+        patch_result = patch_stage.run(task)
+        patch_bundle = patch_result["patch_bundle"]
 
-        auto_applied = False
-        apply_result = None
+        semantic_result = semantic_stage.run(
+            task,
+            patch_bundle
+        )
+
+        semantic_review = (
+            semantic_result["semantic_review"]
+        )
+
+        decision_result = decision_stage.run(
+            semantic_review
+        )
 
         safe_to_apply = (
-            risk == "low"
-            and "approved" in quality
+            decision_result["safe_to_apply"]
         )
 
-        if safe_to_apply:
-            print("Auto-applying safe patch bundle...")
-
-            apply_result = apply_engine.apply_batch(
-                patch_bundle["updates"]
+        if not safe_to_apply:
+            approval_result = approval_stage.run(
+                task=task,
+                patch_bundle=patch_bundle,
+                semantic_review=semantic_review,
+                reason="Patch requires human approval."
             )
 
-            auto_applied = apply_result.get(
-                "success",
-                False
+            print(
+                f"Approval queued: "
+                f"{approval_result['approval_path']}"
             )
 
-            print(f"Auto-applied: {auto_applied}")
-
-        else:
-            approval_path = approvals.submit({
-                "task": task,
-                "patch_bundle": patch_bundle,
-                "semantic_review": semantic_review,
-                "reason": "Patch requires human approval."
-            })
-
-            print(f"Queued for approval: {approval_path}")
-
-        report = {
+        report_payload = {
             "task": task,
             "branch": branch,
             "plan": plan,
             "review": review,
             "patch_bundle": patch_bundle,
             "semantic_review": semantic_review,
-            "auto_applied": auto_applied,
-            "apply_result": apply_result,
+            "safe_to_apply": safe_to_apply,
         }
 
-        path = save_report(
-            f"{task['id']}_queue_result",
-            json.dumps(report, indent=2)
+        report_result = report_stage.run(
+            task["id"],
+            report_payload
         )
 
-        print(f"Saved report: {path}")
+        print(
+            f"Saved report: "
+            f"{report_result['report_path']}"
+        )
 
         queue.mark_done(task_path)
 
