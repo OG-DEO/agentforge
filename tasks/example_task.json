@@ -1,0 +1,26 @@
+{
+  "task_id": "task-0001",
+  "title": "Example task intake",
+  "project": "UltraWorkers",
+  "objective": "Create a safe task format for future agent work.",
+  "status": "draft",
+  "risk_level": "low",
+  "requires_approval": false,
+  "allowed_files": [
+    "tasks/",
+    "scripts/"
+  ],
+  "blocked_actions": [
+    "delete files",
+    "install dependencies",
+    "edit protected projects",
+    "push to GitHub",
+    "run long background jobs"
+  ],
+  "definition_of_done": [
+    "Task is clearly described.",
+    "Allowed files are listed.",
+    "Blocked actions are listed.",
+    "Human can review before execution."
+  ]
+}
