@@ -1,6 +1,7 @@
 import json
 
 from core.task_queue import TaskQueue
+from core.queue_lock import QueueLock
 from core.approval_gate import ApprovalGate
 
 from orchestrators.branch_stage import BranchStage
@@ -15,6 +16,12 @@ from orchestrators.approval_stage import ApprovalStage
 from orchestrators.report_stage import ReportStage
 
 print("\n=== TASK QUEUE PROCESSOR ===\n")
+
+lock = QueueLock()
+
+if not lock.acquire():
+    print("Queue is already locked. Exiting.")
+    raise SystemExit(0)
 
 queue = TaskQueue()
 gate = ApprovalGate()
@@ -33,6 +40,7 @@ tasks = queue.pending()
 
 if not tasks:
     print("No pending tasks.")
+    lock.release()
     raise SystemExit(0)
 
 for task_path in tasks:
@@ -139,3 +147,5 @@ for task_path in tasks:
         queue.mark_failed(task_path)
 
         print("Marked FAILED.")
+
+lock.release()
