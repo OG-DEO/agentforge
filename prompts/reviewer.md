@@ -13,5 +13,3 @@ Output:
 - PASS_WITH_NOTES
 - NEEDS_FIX
 - BLOCKED
-
-Include concise reasons.
