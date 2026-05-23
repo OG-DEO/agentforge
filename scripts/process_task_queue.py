@@ -3,6 +3,7 @@ import json
 from core.task_queue import TaskQueue
 from core.approval_gate import ApprovalGate
 from core.approval_queue import ApprovalQueue
+from core.task_branch_manager import TaskBranchManager
 from workers.planner_worker import PlannerWorker
 from workers.reviewer_worker import ReviewerWorker
 from core.report_writer import save_report
@@ -10,6 +11,8 @@ from core.report_writer import save_report
 queue = TaskQueue()
 gate = ApprovalGate()
 approvals = ApprovalQueue()
+
+branches = TaskBranchManager()
 
 planner = PlannerWorker()
 reviewer = ReviewerWorker()
@@ -39,6 +42,12 @@ for task_path in tasks:
             queue.mark_done(task_path)
             continue
 
+        print("Creating isolated task branch...")
+
+        branch = branches.create_for_task(task)
+
+        print(f"Branch: {branch}")
+
         print("Generating plan...")
         plan = planner.build_plan(task)
 
@@ -47,6 +56,7 @@ for task_path in tasks:
 
         report = {
             "task": task,
+            "branch": branch,
             "plan": plan,
             "review": review,
         }
@@ -59,9 +69,12 @@ for task_path in tasks:
         print(f"Saved report: {path}")
 
         queue.mark_done(task_path)
+
         print("Marked DONE.")
 
     except Exception as e:
         print(f"FAILED: {e}")
+
         queue.mark_failed(task_path)
+
         print("Marked FAILED.")
