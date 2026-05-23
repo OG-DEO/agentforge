@@ -6,16 +6,17 @@ from core.approval_queue import ApprovalQueue
 from core.task_branch_manager import TaskBranchManager
 from workers.planner_worker import PlannerWorker
 from workers.reviewer_worker import ReviewerWorker
+from workers.semantic_reviewer import SemanticReviewer
 from core.report_writer import save_report
 
 queue = TaskQueue()
 gate = ApprovalGate()
 approvals = ApprovalQueue()
-
 branches = TaskBranchManager()
 
 planner = PlannerWorker()
 reviewer = ReviewerWorker()
+semantic = SemanticReviewer()
 
 print("\n=== TASK QUEUE PROCESSOR ===\n")
 
@@ -38,14 +39,11 @@ for task_path in tasks:
             })
 
             print(f"Approval required. Queued: {approval_path}")
-
             queue.mark_done(task_path)
             continue
 
         print("Creating isolated task branch...")
-
         branch = branches.create_for_task(task)
-
         print(f"Branch: {branch}")
 
         print("Generating plan...")
@@ -54,11 +52,18 @@ for task_path in tasks:
         print("Reviewing plan...")
         review = reviewer.review_plan(task, plan)
 
+        print("Semantic review...")
+        semantic_review = semantic.review_code(
+            task,
+            json.dumps(plan, indent=2)
+        )
+
         report = {
             "task": task,
             "branch": branch,
             "plan": plan,
             "review": review,
+            "semantic_review": semantic_review,
         }
 
         path = save_report(
@@ -69,12 +74,9 @@ for task_path in tasks:
         print(f"Saved report: {path}")
 
         queue.mark_done(task_path)
-
         print("Marked DONE.")
 
     except Exception as e:
         print(f"FAILED: {e}")
-
         queue.mark_failed(task_path)
-
         print("Marked FAILED.")
