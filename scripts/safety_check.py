@@ -1,0 +1,21 @@
+from core.git_guard import GitGuard
+from core.project_registry import ProjectRegistry
+
+git_guard = GitGuard()
+registry = ProjectRegistry()
+
+print("\n=== GIT STATUS ===")
+print(git_guard.status() or "clean")
+
+print("\n=== CURRENT BRANCH ===")
+print(git_guard.current_branch())
+
+print("\n=== PROJECT ACCESS TEST ===")
+
+project = registry.ensure_allowed("UltraWorkers")
+
+print("Allowed:")
+print(project["name"])
+print(project["path"])
+
+print("\n=== SAFETY CHECK PASSED ===")
