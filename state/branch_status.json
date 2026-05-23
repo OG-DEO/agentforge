@@ -5,5 +5,13 @@
     "metadata": {
       "reason": "test"
     }
+  },
+  "task/status-test/20260523_132809": {
+    "status": "executing",
+    "updated_at": "2026-05-23T13:28:09.256028",
+    "metadata": {
+      "task_id": "status-test",
+      "stage": "branch_created"
+    }
   }
 }
