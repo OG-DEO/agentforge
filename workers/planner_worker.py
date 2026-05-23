@@ -1,4 +1,5 @@
 from core.lm_studio_client import LMStudioClient
+from core.json_utils import extract_json
 
 
 class PlannerWorker:
@@ -9,22 +10,30 @@ class PlannerWorker:
         prompt = f"""
 You are the UltraWorkers planning system.
 
-Create a concise execution plan.
+Return ONLY valid JSON.
 
 TASK:
 {task}
 
-Requirements:
-- Be structured
-- Be cautious
-- Do not assume permission for destructive actions
-- Prefer reversible operations
+Required schema:
+
+{{
+  "summary": "short summary",
+  "steps": [
+    "step 1",
+    "step 2"
+  ],
+  "risks": [
+    "risk 1"
+  ],
+  "requires_approval": false
+}}
 """
 
         messages = [
             {
                 "role": "system",
-                "content": "You are a careful AI planning worker."
+                "content": "You are a careful AI planning worker that outputs strict JSON."
             },
             {
                 "role": "user",
@@ -32,4 +41,6 @@ Requirements:
             }
         ]
 
-        return self.client.chat(messages)["content"]
+        response = self.client.chat(messages)["content"]
+
+        return extract_json(response)

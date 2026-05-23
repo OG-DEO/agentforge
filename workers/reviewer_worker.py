@@ -1,4 +1,5 @@
 from core.lm_studio_client import LMStudioClient
+from core.json_utils import extract_json
 
 
 class ReviewerWorker:
@@ -9,7 +10,7 @@ class ReviewerWorker:
         prompt = f"""
 You are the UltraWorkers review system.
 
-Review this AI-generated execution plan.
+Return ONLY valid JSON.
 
 TASK:
 {task}
@@ -17,20 +18,23 @@ TASK:
 PLAN:
 {plan}
 
-Your job:
-- Identify risks
-- Identify weak assumptions
-- Suggest safer alternatives
-- Identify missing validation steps
-- Identify possible failure points
+Required schema:
 
-Be concise but thorough.
+{{
+  "approval_status": "approved_or_needs_review",
+  "concerns": [
+    "concern 1"
+  ],
+  "recommendations": [
+    "recommendation 1"
+  ]
+}}
 """
 
         messages = [
             {
                 "role": "system",
-                "content": "You are a cautious AI review worker."
+                "content": "You are a cautious AI review worker that outputs strict JSON."
             },
             {
                 "role": "user",
@@ -38,4 +42,6 @@ Be concise but thorough.
             }
         ]
 
-        return self.client.chat(messages)["content"]
+        response = self.client.chat(messages)["content"]
+
+        return extract_json(response)
