@@ -1,23 +1,12 @@
-import subprocess
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parents[1]
+from core.script_launcher import ScriptLauncher
 
 
 class TestRunner:
-    def run_pytest(self):
-        result = subprocess.run(
-            ["pytest", "-q"],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-        )
+    def __init__(self):
+        self.launcher = ScriptLauncher()
 
-        return {
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
-        }
+    def run_pytest(self):
+        return self.launcher.run("pytest")
 
     def run_script(self, script_path):
         module = script_path
@@ -27,15 +16,4 @@ class TestRunner:
 
         module = module.replace("/", ".")
 
-        result = subprocess.run(
-            ["python", "-m", module],
-            cwd=ROOT,
-            text=True,
-            capture_output=True,
-        )
-
-        return {
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
-        }
+        return self.launcher.run(module)
