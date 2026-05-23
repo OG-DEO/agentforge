@@ -4,6 +4,7 @@ from datetime import datetime
 
 from core.git_branch_manager import GitBranchManager
 from core.audit_logger import AuditLogger
+from core.branch_status_index import BranchStatusIndex
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,6 +25,8 @@ class BranchArchiveManager:
             audit or
             AuditLogger("branch_archive")
         )
+
+        self.status_index = BranchStatusIndex()
 
     def archive(
         self,
@@ -53,6 +56,15 @@ class BranchArchiveManager:
         self.audit.log(
             "branch_archived",
             metadata,
+        )
+
+	        self.status_index.set_status(
+            branch,
+            "archived",
+            {
+                "reason": reason,
+                "archive_file": str(path),
+            },
         )
 
         return metadata
