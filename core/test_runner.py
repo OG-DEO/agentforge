@@ -5,10 +5,13 @@ class TestRunner:
     def __init__(self):
         self.launcher = ScriptLauncher()
 
-    def run_pytest(self):
-        return self.launcher.run("pytest")
+    def run_pytest(self, timeout=120):
+        return self.launcher.run(
+            "pytest",
+            timeout=timeout
+        )
 
-    def run_script(self, script_path):
+    def run_script(self, script_path, timeout=120):
         module = script_path
 
         if module.endswith(".py"):
@@ -16,4 +19,7 @@ class TestRunner:
 
         module = module.replace("/", ".")
 
-        return self.launcher.run(module)
+        return self.launcher.run(
+            module,
+            timeout=timeout
+        )
