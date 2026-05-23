@@ -1,11 +1,15 @@
+import json
+
 from core.task_queue import TaskQueue
 from core.approval_gate import ApprovalGate
+from core.approval_queue import ApprovalQueue
 from workers.planner_worker import PlannerWorker
 from workers.reviewer_worker import ReviewerWorker
 from core.report_writer import save_report
 
 queue = TaskQueue()
 gate = ApprovalGate()
+approvals = ApprovalQueue()
 
 planner = PlannerWorker()
 reviewer = ReviewerWorker()
@@ -22,26 +26,24 @@ for task_path in tasks:
     print(f"\nProcessing: {task_path.name}")
 
     try:
-        import json
-
-        task = json.loads(
-            task_path.read_text(encoding="utf-8")
-        )
+        task = json.loads(task_path.read_text(encoding="utf-8"))
 
         if gate.requires_approval(task):
-            print("Approval required. Skipping.")
+            approval_path = approvals.submit({
+                "task": task,
+                "reason": "Task requires approval before processing."
+            })
+
+            print(f"Approval required. Queued: {approval_path}")
+
+            queue.mark_done(task_path)
             continue
 
         print("Generating plan...")
-
         plan = planner.build_plan(task)
 
         print("Reviewing plan...")
-
-        review = reviewer.review_plan(
-            task,
-            plan
-        )
+        review = reviewer.review_plan(task, plan)
 
         report = {
             "task": task,
@@ -51,18 +53,15 @@ for task_path in tasks:
 
         path = save_report(
             f"{task['id']}_queue_result",
-            str(report)
+            json.dumps(report, indent=2)
         )
 
         print(f"Saved report: {path}")
 
         queue.mark_done(task_path)
-
         print("Marked DONE.")
 
     except Exception as e:
         print(f"FAILED: {e}")
-
         queue.mark_failed(task_path)
-
         print("Marked FAILED.")
