@@ -19,6 +19,7 @@ def main():
 
     run(["python", "scripts/status.py"])
     run(["python", "scripts/check_task.py", task_file])
+    run(["python", "scripts/model_status.py"])
     run(["git", "status", "--short"])
 
     print("\n=== CHECK COMPLETE ===")
