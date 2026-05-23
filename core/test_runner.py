@@ -20,8 +20,15 @@ class TestRunner:
         }
 
     def run_script(self, script_path):
+        module = script_path
+
+        if module.endswith(".py"):
+            module = module[:-3]
+
+        module = module.replace("/", ".")
+
         result = subprocess.run(
-            ["python", script_path],
+            ["python", "-m", module],
             cwd=ROOT,
             text=True,
             capture_output=True,
