@@ -1,7 +1,7 @@
 {
   "backend": "lm_studio",
   "enabled": false,
-  "base_url": "http://localhost:1234/v1",
+  "base_url": "http://192.168.0.238:1234/v1",
   "model": "not_configured_yet",
   "notes": "LM Studio backend is planned but disabled. Enable only after LM Studio server is installed, model storage is confirmed, and disk space is checked."
 }
