@@ -1,20 +1,20 @@
 {
   "projects": [
     {
+      "name": "UltraWorkers",
+      "path": "/home/scott/projects/ultra_workers",
+      "status": "active",
+      "risk_level": "medium",
+      "allowed_now": true,
+      "notes": "Current control framework project. Safe to edit while building foundation."
+    },
+    {
       "name": "Trading AI Terminal",
       "path": "/home/scott/projects/trading_ai_terminal",
       "status": "active",
       "risk_level": "high",
       "allowed_now": false,
       "notes": "Do not edit automatically yet. Requires human approval before any changes."
-    },
-    {
-      "name": "UltraWorkers",
-      "path": "/home/scott/projects/ultra_workers",
-      "status": "active",
-      "risk_level": "medium",
-      "allowed_now": true,
-      "notes": "Current control framework project."
     }
   ]
 }
