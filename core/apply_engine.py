@@ -15,7 +15,13 @@ class ApplyEngine:
         self.rollback = RollbackManager()
         self.syntax = SyntaxValidator()
 
-    def apply_text_update(self, path, new_content, test_script="scripts/safety_check.py"):
+    def apply_text_update(
+        self,
+        path,
+        new_content,
+        test_script="scripts/safety_check.py",
+        require_clean=True,
+    ):
         target = Path(path).resolve()
 
         original = (
@@ -32,7 +38,8 @@ class ApplyEngine:
 
         result = self.writer.write_text(
             target,
-            new_content
+            new_content,
+            require_clean=require_clean,
         )
 
         if target.suffix == ".py":

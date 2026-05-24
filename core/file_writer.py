@@ -32,7 +32,7 @@ class ControlledFileWriter:
 
         return backup
 
-    def write_text(self, path, content):
+    def write_text(self, path, content, require_clean=True):
         current = self.branch.current_branch()
 
         if current == "main":
@@ -43,7 +43,9 @@ class ControlledFileWriter:
         target = Path(path).resolve()
 
         self.paths.validate(str(target))
-        self.git.require_clean_tree()
+
+        if require_clean:
+            self.git.require_clean_tree()
 
         backup = self.backup_file(target)
 
