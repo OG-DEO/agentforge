@@ -1,0 +1,31 @@
+{
+  "task_id": "task-20260524-113917-polish-ez-pickens-frontend-cards",
+  "id": "task-20260524-113917-polish-ez-pickens-frontend-cards",
+  "title": "Polish EZ-PICKENS frontend cards",
+  "project": "EZ-PICKENS",
+  "objective": "Improve the food search UI cards while keeping the existing FastAPI single-app setup working.",
+  "status": "draft",
+  "risk_level": "medium",
+  "requires_approval": false,
+  "allowed_files": [
+  "/home/scott/projects/ez_pickens/frontend/index.html"
+],
+  "blocked_actions": [
+    "delete files",
+    "install dependencies",
+    "edit protected projects without approval",
+    "push to GitHub",
+    "run long background jobs",
+    "enable live trading"
+  ],
+  "definition_of_done": [
+    "Task is clearly described.",
+    "Allowed files are listed before execution.",
+    "Blocked actions are respected.",
+    "Safety check passes before work begins.",
+    "Frontend still loads from http://127.0.0.1:8000.",
+    "Food search for nut still returns styled cards.",
+    "Backend API /food/search remains working.",
+    "Git status is checked before and after changes."
+  ]
+}
