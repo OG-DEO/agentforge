@@ -15,6 +15,14 @@
       "risk_level": "high",
       "allowed_now": false,
       "notes": "Do not edit automatically yet. Requires human approval before any changes."
+    },
+    {
+      "name": "EZ-PICKENS",
+      "path": "/home/scott/projects/ez_pickens",
+      "status": "active",
+      "risk_level": "medium",
+      "allowed_now": true,
+      "notes": "Food finder MVP app. Safe for workers to edit frontend/backend with human review."
     }
   ]
 }
