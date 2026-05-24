@@ -12,10 +12,10 @@ print(git_guard.current_branch())
 
 print("\n=== PROJECT ACCESS TEST ===")
 
-project = registry.ensure_allowed("UltraWorkers")
-
-print("Allowed:")
-print(project["name"])
-print(project["path"])
-
+for name in ["UltraWorkers", "EZ-PICKENS"]:
+    project = registry.ensure_allowed(name)
+    print("Allowed:")
+    print(project["name"])
+    print(project["path"])
+    
 print("\n=== SAFETY CHECK PASSED ===")
