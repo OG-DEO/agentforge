@@ -1,0 +1,29 @@
+{
+  "task_id": "task-20260524-121009-add-recipe-and-meal-prep-options",
+  "id": "task-20260524-121009-add-recipe-and-meal-prep-options",
+  "title": "Add recipe and meal prep options",
+  "project": "EZ-PICKENS",
+  "objective": "Add recipe suggestions and meal prep options to EZ-PICKENS while keeping the existing FastAPI single-app setup working.",
+  "status": "draft",
+  "risk_level": "medium",
+  "requires_approval": false,
+  "allowed_files": [
+  "/home/scott/projects/ez_pickens/frontend/index.html",
+  "/home/scott/projects/ez_pickens/backend/main.py",
+  "/home/scott/projects/ez_pickens/backend/app/routes/mealprep.py"
+  ],
+  "blocked_actions": [
+    "delete files",
+    "install dependencies",
+    "edit protected projects without approval",
+    "push to GitHub",
+    "run long background jobs",
+    "enable live trading"
+  ],
+  "definition_of_done": [
+    "Task is clearly described.",
+    "Allowed files are listed before execution.",
+    "Blocked actions are respected.",
+    "Safety check passes before work begins."
+  ]
+}
