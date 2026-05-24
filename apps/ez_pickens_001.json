@@ -1,0 +1,15 @@
+{
+  "app_id": "ez_pickens_001",
+  "name": "EZ-PICKENS",
+  "goal": "diabetic food suggestion app",
+  "features": [
+    "meal suggestions",
+    "ingredient filtering",
+    "nutrition scoring"
+  ],
+  "constraints": {
+    "platform": "web"
+  },
+  "created_at": "2026-05-23T13:54:44.100990",
+  "status": "draft"
+}
