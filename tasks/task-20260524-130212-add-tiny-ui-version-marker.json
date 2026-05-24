@@ -1,0 +1,33 @@
+{
+  "task_id": "task-20260524-130212-add-tiny-ui-version-marker",
+  "title": "Add tiny UI version marker",
+  "project": "EZ-PICKENS",
+  "objective": "Add a small non-invasive version marker comment to the EZ-PICKENS frontend to verify controlled apply works.",
+  "status": "draft",
+  "risk_level": "medium",
+  "requires_approval": false,
+  "allowed_files": [
+    "/home/scott/projects/ez_pickens/frontend/index.html"
+  ],
+  "updates": [
+    {
+      "target_path": "/home/scott/projects/ez_pickens/frontend/index.html",
+      "new_content": "<!DOCTYPE html>\n<html>\n<head>\n  <title>EZ-PICKENS</title>\n  <style>\n    body {\n      font-family: Arial;\n      background: #0f1115;\n      color: #fff;\n      padding: 20px;\n    }\n\n    h2 {\n      margin-bottom: 15px;\n    }\n\n    .row {\n      display: flex;\n      gap: 10px;\n      margin-bottom: 20px;\n    }\n\n    input {\n      flex: 1;\n      padding: 12px;\n      border-radius: 6px;\n      border: none;\n      outline: none;\n    }\n\n    button {\n      padding: 12px 16px;\n      border: none;\n      border-radius: 6px;\n      background: #4f7cff;\n      color: white;\n      cursor: pointer;\n    }\n\n    button:hover {\n      background: #3d66d6;\n    }\n\n    .grid {\n      display: grid;\n      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));\n      gap: 12px;\n    }\n\n    .card {\n      background: #1a1d25;\n      padding: 12px;\n      border-radius: 10px;\n      border: 1px solid #2a2f3a;\n    }\n\n    .score {\n      font-weight: bold;\n      margin-top: 5px;\n    }\n\n    .green { color: #00e676; }\n    .yellow { color: #ffcc00; }\n    .red { color: #ff5252; }\n\n    .reason {\n      font-size: 12px;\n      opacity: 0.8;\n      margin-top: 6px;\n    }\n  </style>\n</head>\n\n<body>\n\n<h2>EZ-PICKENS Food Finder</h2>\n\n<div class=\"row\">\n  <input id=\"query\" placeholder=\"Search food...\" />\n  <button onclick=\"searchFood()\">Search</button>\n</div>\n\n<div id=\"results\" class=\"grid\"></div>\n\n<script>\nasync function searchFood() {\n    const q = document.getElementById(\"query\").value;\n\n    const res = await fetch(`http://127.0.0.1:8000/food/search?q=${q}`);\n    const data = await res.json();\n\n    const box = document.getElementById(\"results\");\n    box.innerHTML = \"\";\n\n    data.results.forEach(item => {\n        const score = item.score.score;\n        const level = item.score.level;\n        const reason = item.score.reason;\n\n        const div = document.createElement(\"div\");\n        div.className = \"card\";\n\n        div.innerHTML = `\n            <div><b>${item.name}</b></div>\n            <div class=\"score ${level}\">${score} (${level})</div>\n            <div class=\"reason\">${reason}</div>\n        `;\n\n        box.appendChild(div);\n    });\n}\n\n// ENTER KEY SUPPORT\ndocument.getElementById(\"query\").addEventListener(\"keydown\", function(e) {\n    if (e.key === \"Enter\") searchFood();\n});\n</script>\n\n    <!-- EZ-PICKENS controlled apply verified -->\n</body>\n</html>\n"
+    }
+  ],
+  "blocked_actions": [
+    "delete files",
+    "install dependencies",
+    "edit protected projects without approval",
+    "push to GitHub",
+    "run long background jobs",
+    "enable live trading"
+  ],
+  "definition_of_done": [
+    "Task is clearly described.",
+    "Allowed files are listed before execution.",
+    "Blocked actions are respected.",
+    "Safety check passes before work begins."
+  ],
+  "id": "task-20260524-130212-add-tiny-ui-version-marker"
+}
