@@ -4,6 +4,7 @@ from pathlib import Path
 class PathGuard:
     ALLOWED_ROOTS = [
         "/home/scott/projects/ultra_workers",
+        "/home/scott/projects/ez_pickens",
     ]
 
     BLOCKED_PATTERNS = [
