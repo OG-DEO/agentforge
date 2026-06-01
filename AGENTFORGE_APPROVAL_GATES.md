@@ -1,4 +1,4 @@
-# UltraWorkers Approval Gates
+# AgentForge Approval Gates
 
 Require human approval before:
 - Installing large models or dependencies.

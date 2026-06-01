@@ -1,4 +1,4 @@
-# UltraWorkers Rules
+# AgentForge Rules
 
 1. Objective comes first.
 2. No drifting into unrelated features.
