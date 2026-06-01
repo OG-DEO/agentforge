@@ -37,3 +37,4 @@ tasks/task-*.json
 
 # Editor/temp files
 *.save
+.aider*
