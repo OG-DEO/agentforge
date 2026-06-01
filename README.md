@@ -1,6 +1,6 @@
-# UltraWorkers Local AI Software Factory
+# AgentForge Local AI Software Factory
 
-UltraWorkers is a local-first AI worker framework for planning, coding, testing, reviewing, documenting, and preparing publishable projects while staying controlled by objective files, approval gates, and Git checkpoints.
+AgentForge is a local-first AI worker framework for planning, coding, testing, reviewing, documenting, and preparing publishable projects while staying controlled by objective files, approval gates, and Git checkpoints.
 
 ## Current Status
 
@@ -31,7 +31,7 @@ Run full pre-check:
 python scripts/run_check.py
 
 Create a new task:
-python scripts/create_task.py "UltraWorkers" "Task title" "Task objective"
+python scripts/create_task.py "AgentForge" "Task title" "Task objective"
 
 Check a task:
 python scripts/check_task.py tasks/example_task.json
@@ -39,7 +39,7 @@ python scripts/check_task.py tasks/example_task.json
 ## Safety Model
 
 UltraWorkers starts with protected boundaries:
-- UltraWorkers can edit itself during foundation building.
+- AgentForge can edit itself during foundation building.
 - Trading AI Terminal is registered but protected.
 - High-risk actions require approval.
 - Git checkpoints are required before major work.
