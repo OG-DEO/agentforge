@@ -16,3 +16,24 @@ __pycache__/
 *.pyc
 merge_approvals/
 logs/
+
+# UltraWorkers runtime state
+branch_archive/*
+state/*
+logs/*
+memory/*
+queue/*
+reports/*
+workspaces/*
+approvals/*
+merge_approvals/*
+
+# Keep safe examples trackable
+!tasks/example_task.json
+!tasks/sample_safe_task.json
+
+# Ignore generated task files
+tasks/task-*.json
+
+# Editor/temp files
+*.save
