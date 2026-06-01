@@ -38,7 +38,7 @@ python scripts/check_task.py tasks/example_task.json
 
 ## Safety Model
 
-UltraWorkers starts with protected boundaries:
+AgentForge starts with protected boundaries:
 - AgentForge can edit itself during foundation building.
 - Trading AI Terminal is registered but protected.
 - High-risk actions require approval.
